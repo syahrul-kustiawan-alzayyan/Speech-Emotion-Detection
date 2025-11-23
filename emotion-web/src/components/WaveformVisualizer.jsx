@@ -4,7 +4,7 @@ const WaveformVisualizer = ({ audioData, isRecording }) => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 100 });
-  
+
   // Store the current audio data in a ref to avoid closure issues
   const audioDataRef = useRef(audioData);
   useEffect(() => {
@@ -14,7 +14,7 @@ const WaveformVisualizer = ({ audioData, isRecording }) => {
   const drawWaveform = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     const width = canvasSize.width;
     const height = canvasSize.height;
@@ -24,20 +24,43 @@ const WaveformVisualizer = ({ audioData, isRecording }) => {
 
     const currentAudioData = audioDataRef.current;
     if (!currentAudioData || currentAudioData.length === 0) {
-      // Draw a flat line when no audio data
+      // Draw a subtle grid when no audio data
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < width; x += 20) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
       ctx.beginPath();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = isRecording ? '#3B82F6' : '#93C5FD';
+      ctx.strokeStyle = isRecording ? '#3B82F6' : '#9CA3AF';
       ctx.moveTo(0, height / 2);
       ctx.lineTo(width, height / 2);
       ctx.stroke();
       return;
     }
 
+    // Draw gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, isRecording ? 'rgba(59, 130, 246, 0.1)' : 'rgba(156, 163, 175, 0.1)');
+    gradient.addColorStop(1, isRecording ? 'rgba(59, 130, 246, 0.05)' : 'rgba(156, 163, 175, 0.05)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw center line
+    ctx.strokeStyle = '#475569'; // slate-600
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, height / 2);
+    ctx.lineTo(width, height / 2);
+    ctx.stroke();
+
     // Draw waveform
     ctx.beginPath();
     ctx.lineWidth = 2;
-    ctx.strokeStyle = isRecording ? '#3B82F6' : '#93C5FD';
+    ctx.strokeStyle = isRecording ? '#3B82F6' : '#9CA3AF';
     ctx.moveTo(0, height / 2);
 
     const sliceWidth = width / currentAudioData.length;
@@ -48,7 +71,7 @@ const WaveformVisualizer = ({ audioData, isRecording }) => {
     }
 
     ctx.stroke();
-    
+
     // Continue animation if recording
     if (isRecording) {
       animationRef.current = requestAnimationFrame(drawWaveform);
@@ -101,7 +124,7 @@ const WaveformVisualizer = ({ audioData, isRecording }) => {
         ref={canvasRef}
         width={canvasSize.width}
         height={canvasSize.height}
-        className="w-full bg-gray-100 rounded"
+        className="w-full bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg"
       />
     </div>
   );

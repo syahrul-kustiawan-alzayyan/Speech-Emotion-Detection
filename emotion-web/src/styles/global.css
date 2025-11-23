@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 222 84% 5%;
+    --foreground: 210 40% 98%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --popover: 222 84% 5%;
+    --popover-foreground: 210 40% 98%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --card: 222 84% 5%;
+    --card-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222 47.4% 11.2%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --accent: 217 32% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 216 34% 17%;
+    --radius: 0.5rem;
+  }
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -9,6 +38,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   overflow-x: hidden;
 }
 
@@ -23,16 +54,84 @@ code {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c5c5c5;
+  background: hsl(var(--border));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: hsl(var(--muted-foreground));
+}
+
+/* Dark mode specific styles */
+body {
+  background-color: #0f172a; /* dark slate 900 */
+  color: #f1f5f9; /* slate 100 */
+}
+
+.card {
+  background-color: #1e293b; /* slate 800 */
+  border-color: #334155; /* slate 700 */
+  color: #f1f5f9; /* slate 100 */
+}
+
+.bg-white {
+  background-color: #1e293b !important; /* slate 800 */
+}
+
+.bg-gray-50 {
+  background-color: #1e293b !important; /* slate 800 */
+}
+
+.bg-gray-100 {
+  background-color: #334155 !important; /* slate 700 */
+}
+
+.text-gray-900 {
+  color: #f1f5f9 !important; /* slate 100 */
+}
+
+.text-gray-800 {
+  color: #e2e8f0 !important; /* slate 200 */
+}
+
+.text-gray-700 {
+  color: #cbd5e1 !important; /* slate 300 */
+}
+
+.text-gray-600 {
+  color: #94a3b8 !important; /* slate 400 */
+}
+
+.text-gray-500 {
+  color: #64748b !important; /* slate 500 */
+}
+
+.border-gray-200 {
+  border-color: #334155 !important; /* slate 700 */
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
 /* Animation for recording indicator */
@@ -53,4 +152,85 @@ code {
 
 .animate-pulse-custom {
   animation: pulse 1.5s infinite;
+}
+
+/* Professional card styling */
+.card {
+  @apply bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-300 hover:shadow-md;
+}
+
+/* Professional button styling */
+.btn {
+  @apply inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 text-white hover:bg-indigo-700;
+}
+
+.btn-secondary {
+  @apply bg-gray-600 text-white hover:bg-gray-700;
+}
+
+.btn-success {
+  @apply bg-emerald-600 text-white hover:bg-emerald-700;
+}
+
+.btn-destructive {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+.btn-lg {
+  @apply h-12 px-6 text-lg;
+}
+
+.btn-sm {
+  @apply h-9 px-3 text-sm;
+}
+
+/* Professional input styling */
+.input {
+  @apply flex h-10 w-full rounded-md border border-gray-600 bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+/* Professional typography */
+.h1 {
+  @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+}
+
+.h2 {
+  @apply scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0;
+}
+
+.h3 {
+  @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+}
+
+.h4 {
+  @apply scroll-m-20 text-xl font-semibold tracking-tight;
+}
+
+/* Professional container */
+.container {
+  @apply w-full max-w-6xl mx-auto px-4 md:px-6;
+}
+
+/* Professional section styling */
+.section {
+  @apply py-16 md:py-24;
+}
+
+/* Professional animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Professional gradient */
+.gradient-bg {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
 }

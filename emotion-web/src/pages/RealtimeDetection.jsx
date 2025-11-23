@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import AudioRecorder from '../components/AudioRecorder';
 import WaveformVisualizer from '../components/WaveformVisualizer';
 import ResultCard from '../components/ResultCard';
 import useAudioRecorder from '../hooks/useAudioRecorder';
 import { WebSocketService } from '../services/websocket';
-import { formatPredictionResult } from '../utils/formatUtils';
 
 const RealtimeDetection = () => {
   const [latestResult, setLatestResult] = useState(null);
@@ -58,64 +57,98 @@ const RealtimeDetection = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Real-time Emotion Detection</h1>
-        <p className="text-gray-600 mb-8">
-          Speak into your microphone and see real-time emotion analysis
-        </p>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            <AudioRecorder 
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 py-12">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Live Emotion Detection</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Speak into your microphone and see real-time emotion analysis powered by advanced AI
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="space-y-8">
+            <AudioRecorder
               onRecording={audioData}
               onStart={handleStart}
               onStop={handleStop}
               isRecording={isRecording}
               connectionStatus={connectionStatus}
             />
-            
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">Live Audio Visualization</h3>
-              <WaveformVisualizer 
-                audioData={audioData} 
-                isRecording={isRecording} 
-              />
+
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Live Audio Waveform</h3>
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  <span className="text-sm text-gray-600">Live</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <WaveformVisualizer
+                  audioData={audioData}
+                  isRecording={isRecording}
+                />
+              </div>
             </div>
           </div>
-          
-          <div>
+
+          <div className="space-y-8">
             <ResultCard result={latestResult} />
-            
-            <div className="mt-6 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">Recent Predictions</h3>
-              {latestResult ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 3 }, (_, i) => (
-                    <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                      <span className="capitalize">{latestResult.label}</span>
-                      <span className="text-sm text-gray-500">
+
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Analysis</h3>
+              <div className="space-y-4">
+                {latestResult ? (
+                  Array.from({ length: 3 }, (_, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
+                          <span className="text-sm">📊</span>
+                        </div>
+                        <span className="capitalize font-medium text-gray-800">{latestResult.label}</span>
+                      </div>
+                      <span className="text-sm font-bold text-indigo-600">
                         {(latestResult.confidence * 100).toFixed(1)}%
                       </span>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No predictions yet</p>
-              )}
+                  ))
+                ) : (
+                  <div className="text-center py-6">
+                    <div className="text-4xl mb-4">⏳</div>
+                    <p className="text-gray-500">Waiting for analysis results...</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-        
-        <div className="mt-8 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">How Real-time Detection Works</h3>
-          <ul className="list-disc pl-5 space-y-2 text-gray-600">
-            <li>Click "Start Recording" to begin capturing audio from your microphone</li>
-            <li>Your audio is sent to our server in small chunks for processing</li>
-            <li>The AI model analyzes each chunk to detect emotions in real-time</li>
-            <li>Results are displayed as they become available</li>
-            <li>Stop recording when you're finished speaking</li>
-          </ul>
+
+        <div className="mt-12 bg-white rounded-2xl shadow-lg p-8 border border-gray-100 max-w-4xl mx-auto">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">How Live Detection Works</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-indigo-600 text-xl">1</span>
+              </div>
+              <h4 className="font-bold text-gray-900 mb-2">Start Recording</h4>
+              <p className="text-gray-600 text-sm">Click the record button and allow microphone access</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-indigo-600 text-xl">2</span>
+              </div>
+              <h4 className="font-bold text-gray-900 mb-2">AI Processing</h4>
+              <p className="text-gray-600 text-sm">Your voice is analyzed in real-time by our AI model</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-purple-600 text-xl">3</span>
+              </div>
+              <h4 className="font-bold text-gray-900 mb-2">Results Display</h4>
+              <p className="text-gray-600 text-sm">See emotions detected with confidence scores</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
