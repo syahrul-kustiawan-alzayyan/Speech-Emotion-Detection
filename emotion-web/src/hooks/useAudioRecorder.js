@@ -10,6 +10,7 @@ const useAudioRecorder = (webSocketService) => {
   const analyserRef = useRef(null);
   const dataArrayRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const recordingStoppedRef = useRef(false);
 
   // Function to visualize audio levels
   const visualize = () => {
@@ -27,6 +28,9 @@ const useAudioRecorder = (webSocketService) => {
 
   const startRecording = async () => {
     try {
+      // Reset the recording stopped flag
+      recordingStoppedRef.current = false;
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setPermission(true);
 
@@ -56,7 +60,7 @@ const useAudioRecorder = (webSocketService) => {
       audioChunksRef.current = [];
 
       mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0 && isRecording) { // Only process if still recording
+        if (event.data.size > 0 && !recordingStoppedRef.current) { // Use ref instead of state
           console.log('Audio chunk received, size:', event.data.size);
 
           // Send the audio data directly to WebSocket as soon as it's available
@@ -88,6 +92,9 @@ const useAudioRecorder = (webSocketService) => {
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
+
+      // Set the flag to prevent further audio processing
+      recordingStoppedRef.current = true;
 
       // Stop all tracks of the stream immediately
       if (mediaRecorderRef.current.stream) {
